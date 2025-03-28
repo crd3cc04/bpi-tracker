@@ -1,0 +1,86 @@
+<!-- Business Process Improvement Tracker (Starter Project) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPI Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 2rem; background-color: #f7f9fb; }
+    .form-section { background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.05); }
+    #output { white-space: pre-wrap; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">Business Process Improvement Tracker</h1>
+    <div class="form-section">
+      <form id="processForm">
+        <div class="mb-3">
+          <label for="processName" class="form-label">Process Name</label>
+          <input type="text" class="form-control" id="processName" required>
+        </div>
+        <div class="mb-3">
+          <label for="currentSteps" class="form-label">Current Workflow Steps</label>
+          <textarea class="form-control" id="currentSteps" rows="3" placeholder="Step 1 -> Step 2 -> Step 3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="issues" class="form-label">Known Issues</label>
+          <textarea class="form-control" id="issues" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="improvements" class="form-label">Proposed Improvements</label>
+          <textarea class="form-control" id="improvements" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Process</button>
+      </form>
+    </div>
+
+    <div id="output" class="mt-5">
+      <h3>Saved Process Entries</h3>
+      <ul id="processList" class="list-group"></ul>
+    </div>
+
+    <div class="mt-5">
+      <h4>Workflow Visualization</h4>
+      <div class="mermaid" id="mermaidDiagram">
+        graph LR
+      </div>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+
+    const processList = document.getElementById('processList');
+    const form = document.getElementById('processForm');
+    const diagram = document.getElementById('mermaidDiagram');
+
+    const mockData = [];
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('processName').value;
+      const current = document.getElementById('currentSteps').value;
+      const issues = document.getElementById('issues').value;
+      const improvement = document.getElementById('improvements').value;
+
+      const newEntry = { name, current, issues, improvement };
+      mockData.push(newEntry);
+
+      const li = document.createElement('li');
+      li.classList.add('list-group-item');
+      li.innerHTML = `<strong>${name}</strong><br><em>Issues:</em> ${issues}<br><em>Improvement:</em> ${improvement}`;
+      processList.appendChild(li);
+
+      diagram.innerHTML = `graph LR\n${current.split('->').map(step => step.trim()).join(' --> ')}`;
+      mermaid.init(undefined, diagram);
+
+      form.reset();
+    });
+  </script>
+</body>
+</html>
